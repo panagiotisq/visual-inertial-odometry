@@ -105,7 +105,7 @@ most computation time is spent on **image processing** and **feature matching** 
 
 ---
 <p align="center">
-  <img src="result.png" alt="Visual input" width="600">
+  <img src="result.png" alt="output Trajectory" width="600">
 </p>
 
 ## 🧠 Notes
