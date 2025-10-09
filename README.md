@@ -104,6 +104,9 @@ The complete pipeline may take several minutes to run —
 most computation time is spent on **image processing** and **feature matching** stages.
 
 ---
+<p align="center">
+  <img src="result.png" alt="Visual input" width="600">
+</p>
 
 ## 🧠 Notes
 - Make sure the dataset paths and file names match exactly.
