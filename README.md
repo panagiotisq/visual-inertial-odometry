@@ -1,4 +1,4 @@
-# 🛰️ Visual-Inertial Odometry (VIO) Pipeline
+# 🛰️ Visual-Inertial Odometry (VIO)
 
 <p align="center">
   <img src="video.png" alt="Visual input" width="600">
