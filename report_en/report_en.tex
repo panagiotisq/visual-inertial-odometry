@@ -2,6 +2,7 @@
 \usepackage[a4paper,margin=2.5cm]{geometry}
 \usepackage{amsmath,amssymb}
 \usepackage{graphicx}
+\usepackage{microtype}
 \usepackage{hyperref}
 \usepackage{booktabs}
 \usepackage{enumitem}
@@ -14,17 +15,10 @@
 
 \title{\Large Visual-Inertial Odometry (VIO)\\[2pt]\large Robotic Systems 1 --- Course Project}
 \author{Panagiotis Kiousis \and Stefanos Fotopoulos}
-\date{English, extended version of the original report (9 June 2025)}
+\date{June 9, 2025}
 
 \begin{document}
 \maketitle
-
-\begin{center}
-\small\textit{This is an extended English version of the original Greek report for this project. All
-original content is included; a few derivations and discussion points have been added for clarity
-and are marked as such. The original Greek report remains available in the repository
-(\texttt{project/ERGASIA RS.pdf}) for reference.}
-\end{center}
 
 \section*{Introduction}
 Visual-Inertial Odometry (VIO) estimates the trajectory of a moving camera by fusing data from a
@@ -39,11 +33,13 @@ $z$) to the EKF. This choice ensures that the correction step of the EKF has a s
 effect on the state estimate at every step, rather than being washed out by an ever-growing absolute
 pose.
 
+\begin{sloppypar}
 The dataset used is one of the sequences of the TUM Visual-Inertial Dataset
-(\texttt{dataset-corridor4\_512\_16}). It contains stereo video from the two cameras of the data
+(\texttt{dataset-corridor4\_\allowbreak 512\_\allowbreak 16}). It contains stereo video from the two cameras of the data
 collection rig (``corridor4''), IMU recordings, the relative poses between the sensors, sensor
 calibration errors, and calibration information. Before reaching the core of the pipeline, some
 preprocessing of the raw data was necessary.
+\end{sloppypar}
 
 \section{Inertial Odometry}
 
@@ -62,19 +58,23 @@ measurements is averaged, producing the downsampled sequence used as the EKF's p
 \subsection{State modeling}
 The state vector consists of position, orientation (as Euler angles) and velocity in the world frame:
 \[
-m = [x,y,z,\phi,\theta,\psi,v_x,v_y,v_z]^T, \qquad (x,y,z) \text{ position}, \quad (\phi,\theta,\psi)
-\text{ Euler angles}, \quad (v_x,v_y,v_z) \text{ velocity}.
+m = [x,y,z,\phi,\theta,\psi,v_x,v_y,v_z]^T,
+\]
+\[
+(x,y,z) \text{ position}, \quad (\phi,\theta,\psi) \text{ Euler angles}, \quad (v_x,v_y,v_z) \text{ velocity}.
 \]
 
 \subsection{System dynamics model (prediction step)}
+\begin{sloppypar}
 The dynamics are based on integrating the IMU measurements and are implemented in
-\texttt{imu\_dynamics(mu, u, dt=0.05)}, which takes the current state \texttt{mu} and the IMU input
+\texttt{imu\_dynamics(\allowbreak mu,\allowbreak\ u,\allowbreak\ dt{=}0.05)}, which takes the current state \texttt{mu} and the IMU input
 \texttt{u}. The function reads the position, orientation (as Euler angles) and velocity from \texttt{mu}.
 From the input \texttt{u}, it takes the angular velocity and linear acceleration in the body frame.
 The orientation is updated with a simple Euler integration: the angular velocity is first rotated into
 the world frame and then integrated over $dt$. The accelerations are then rotated from the body frame
 into the world frame, and gravity is subtracted. The resulting world-frame acceleration updates the
 velocity and finally the position. The result is the predicted state after a time step $dt$:
+\end{sloppypar}
 \begin{align}
 R_{\text{world}} &= \texttt{euler\_to\_rot}(\text{orientation})\\
 \omega_{\text{world}} &= R_{\text{world}} \cdot \omega_{\text{body}}\\
@@ -162,8 +162,8 @@ with very small error, via Newton's method, returning the undistorted $(x,y)$ pa
 \texttt{cv2.fisheye.undistortImage}, i.e. OpenCV's \emph{equidistant} fisheye model
 ($r_d = r\,(1+k_1 r^2+k_2 r^4+k_3 r^6+k_4 r^8)$ on the angle-derived radius $r$, not the classical
 radial/tangential model written above), consistent with the TUM-VI rig's wide-FOV lenses. The
-radial+tangential equations above are the general pinhole-distortion model described in the original
-report and are kept here for completeness; in this project they describe the type of distortion
+radial+tangential equations above are the general pinhole-distortion model, kept here for
+completeness; in this project they describe the type of distortion
 conceptually, while the actual numerical correction is carried out by OpenCV's fisheye routine with
 the dataset's $(k_1,k_2,k_3,k_4)$ fisheye coefficients, not by manually inverting the two equations
 above. No tangential term is used in the code, since the equidistant fisheye model does not include
@@ -185,7 +185,7 @@ lines for both cameras (or within a small range of lines, to allow for error).
 \begin{figure}[h]
   \centering
   \includegraphics[width=0.6\textwidth]{figures/epipolar_geometry.png}
-  \caption{Epipolar-line visualization (image used for illustration in the original report).}
+  \caption{Epipolar-line visualization.}
 \end{figure}
 
 To do this we again use the \texttt{cv2} library, specifically the function \texttt{stereoRectify},
@@ -250,8 +250,11 @@ example visualization of feature detection in one image.
   \caption{SIFT feature-detection visualization (detected keypoints overlaid on a rectified left-camera frame).}
 \end{figure}
 
-In code, SIFT is configured with \texttt{nfeatures=500}, \texttt{nOctaveLayers=3},
-\texttt{contrastThreshold=0.02}, \texttt{edgeThreshold=15}, \texttt{sigma=1.6}.
+In code, SIFT is configured with the following parameters:
+\begin{itemize}[leftmargin=*, nosep]
+  \item \texttt{nfeatures=500}, \texttt{nOctaveLayers=3}, \texttt{contrastThreshold=0.02}
+  \item \texttt{edgeThreshold=15}, \texttt{sigma=1.6}
+\end{itemize}
 
 \subsection{Feature matching}
 Having identified the features and being able to distinguish them, the next step is to match the
@@ -343,7 +346,7 @@ whose singular value decomposition (SVD) yields the rotation matrix
 \[
 R = VU^T
 \]
-(with a reflection correction when $\det R < 0$, applied in code but omitted from the original report),
+(with a reflection correction applied when $\det R < 0$, to guarantee a proper rotation),
 which is the best-fit rotation between the two sets. The translation is then
 \[
 t = \bar p_n - R\bar p_s.
@@ -416,7 +419,9 @@ propagates, through integration, into the state $m=[x,y,z,\phi,\theta,\psi,v_x,v
 \texttt{imu\_config.yaml} we found the following IMU noise values:
 \[
 \sigma_a = \texttt{accel\_noise\_density} = 0.0028\ \mathrm{m/s^{1.5}} = \frac{\mathrm m}{\mathrm
-s^2\sqrt{\mathrm{Hz}}}, \qquad
+s^2\sqrt{\mathrm{Hz}}},
+\]
+\[
 \sigma_\omega = \texttt{gyro\_noise\_density} = 0.00016\ \mathrm{rad/s^{0.5}} = \frac{\mathrm{rad}}{\mathrm
 s\sqrt{\mathrm{Hz}}}.
 \]
@@ -517,12 +522,12 @@ R_{\text{cov}} = I_9\times 10^{-4}, \qquad Q_{\text{cov}} = I_6\times 10^{-8}.
   \caption{EKF trajectory, $R_{\text{cov}}=10^{-4}I$, $Q_{\text{cov}}=10^{-8}I$.}
 \end{figure}
 
-\textbf{*NOTE} (from the original report): the world frame was taken to be the system's initial pose.
+\textbf{*NOTE:} the world frame was taken to be the system's initial pose.
 The issue is that gravity was subtracted assuming the world frame's $z$ axis is exactly vertical at
 time 0, but we did not know for certain whether it actually is. The results along the $z$ axis should
 therefore be interpreted with this in mind.
 
-\subsection*{Discussion (added)}
+\subsection*{Discussion}
 The qualitative difference between the three runs is consistent with what the Kalman-gain equation
 predicts: lowering $R$ relative to $Q$ makes the filter trust the IMU-driven prediction more, so the
 corrections from VO are down-weighted and the trajectory follows the (drift-prone, double-integrated)
@@ -533,7 +538,7 @@ behavior one would want from the fusion, even though — per the implementation 
 specific numerical values of $R$ and $Q$ used here are fixed constants chosen by hand rather than the
 physically-derived or per-step values computed elsewhere in the pipeline.
 
-\section*{Limitations and possible improvements (added)}
+\section*{Limitations and Possible Improvements}
 \begin{itemize}[leftmargin=*]
   \item \textbf{Constant, hand-tuned $R$ and $Q$.} As noted in Secs.~2.6 and 3.1, both the
   noise-density-derived $R_{\text{cov}}$ and the per-step VO covariance $Q_{\text{cov},k}$ are computed

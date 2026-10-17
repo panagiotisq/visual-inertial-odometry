@@ -11,8 +11,7 @@ The goal is to estimate the 3D trajectory of a moving platform by fusing **visua
 
 ## 📄 Report
 
-The full write-up, with all derivations, figures and results, is **[`report_en/report_en.pdf`](report_en/report_en.pdf)** (English).  
-The original report (Greek) is kept for reference at [`project/ERGASIA RS.pdf`](project/ERGASIA%20RS.pdf).
+The full write-up, with all derivations, figures and results, is **[`report_en/report_en.pdf`](report_en/report_en.pdf)**.
 
 ---
 
