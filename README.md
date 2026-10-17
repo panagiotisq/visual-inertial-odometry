@@ -9,6 +9,13 @@ The goal is to estimate the 3D trajectory of a moving platform by fusing **visua
 
 ---
 
+## 📄 Report
+
+The full write-up, with all derivations, figures and results, is **[`report_en/report_en.pdf`](report_en/report_en.pdf)** (English).  
+The original report (Greek) is kept for reference at [`project/ERGASIA RS.pdf`](project/ERGASIA%20RS.pdf).
+
+---
+
 ## ⚙️ Requirements
 
 ### 🧩 Python Libraries
@@ -44,7 +51,7 @@ in the **same directory** as the project scripts.
 
 Run the scripts in the following order:
 
-### 1️⃣ `step1_undistortion.py`
+### 1️⃣ `step1 undistortion.py`
 - Undistorts and rectifies stereo images  
 - **Outputs:**
   - `cam0_images_undistorted/`, `cam1_images_undistorted/`
@@ -53,7 +60,7 @@ Run the scripts in the following order:
 
 ---
 
-### 2️⃣ `step2_feature_detection_and_description.py`
+### 2️⃣ `step2 feature detection and description.py`
 - Detects features in rectified images  
 - **Outputs:**
   - `features/keypoints/`
@@ -61,7 +68,7 @@ Run the scripts in the following order:
 
 ---
 
-### 3️⃣ `step3_feature_matching_between_cams_and_frames.py`
+### 3️⃣ `step3 feature matching between cams and frames.py`
 - Performs stereo and temporal feature matching  
 - **Outputs:**
   - `features/stereo_matches_filtered/`
@@ -69,14 +76,14 @@ Run the scripts in the following order:
 
 ---
 
-### 4️⃣ `step4_pointcloud.py`
+### 4️⃣ `step4 pointcloud.py`
 - Generates 3D point clouds from stereo matches  
 - **Outputs:**
   - `features/pointclouds/`
 
 ---
 
-### 5️⃣ `step5_TVO.py`
+### 5️⃣ `step5 TVO.py`
 - Computes relative motion between frames (Visual Odometry)  
 - **Outputs:**
   - `features/relative_motions_vo/`
